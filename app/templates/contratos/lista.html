@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}Contratos · Lar Ideal{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h2 class="mb-0">Contratos</h2>
+  <a href="/contratos/novo" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Novo contrato</a>
+</div>
+
+<form method="get" action="/contratos" class="row g-2 mb-3">
+  <div class="col-md-5">
+    <input type="text" name="q" class="form-control" placeholder="Imóvel, proprietário ou cliente" value="{{ filtros.q }}">
+  </div>
+  <div class="col-6 col-md-2">
+    <select name="tipo" class="form-select">
+      <option value="">Todos os tipos</option>
+      {% for t in tipos %}<option value="{{ t }}" {{ 'selected' if filtros.tipo == t }}>{{ t | rotulo }}</option>{% endfor %}
+    </select>
+  </div>
+  <div class="col-6 col-md-2">
+    <select name="status" class="form-select">
+      <option value="">Qualquer status</option>
+      {% for s in status_lista %}<option value="{{ s }}" {{ 'selected' if filtros.status == s }}>{{ s | rotulo }}</option>{% endfor %}
+    </select>
+  </div>
+  <div class="col-md-3 d-flex gap-2">
+    <button class="btn btn-outline-primary flex-fill"><i class="bi bi-search"></i> Filtrar</button>
+    {% if filtrando %}<a href="/contratos" class="btn btn-outline-secondary" title="Limpar filtros"><i class="bi bi-x-lg"></i></a>{% endif %}
+  </div>
+</form>
+
+<p class="text-muted small mb-2">{{ contratos | length }} contrato(s) · <code>JOIN</code> entre contratos, imóveis e clientes (proprietário e cliente)</p>
+
+<div class="card shadow-sm">
+  <div class="table-responsive">
+    <table class="table table-hover mb-0 align-middle">
+      <thead class="table-light">
+        <tr><th>#</th><th>Tipo</th><th>Imóvel</th><th>Proprietário</th><th>Cliente</th>
+            <th class="text-end">Valor</th><th>Vigência</th><th>Status</th><th class="text-end">Ações</th></tr>
+      </thead>
+      <tbody>
+        {% for c in contratos %}
+        <tr>
+          <td>{{ c.id }}</td>
+          <td>{{ c.tipo | rotulo }}</td>
+          <td>{{ c.imovel }}</td>
+          <td>{{ c.proprietario }}</td>
+          <td>{{ c.cliente }}</td>
+          <td class="text-end text-nowrap">{{ c.valor | moeda }}{% if c.tipo == 'LOCACAO' %}<span class="small text-muted">/mês</span>{% endif %}</td>
+          <td class="text-nowrap">{{ c.data_inicio | data_br }}{% if c.data_fim %} a {{ c.data_fim | data_br }}{% endif %}</td>
+          <td><span class="badge text-bg-{{ c.status | cor }}">{{ c.status | rotulo }}</span></td>
+          <td class="text-end text-nowrap">
+            <a href="/contratos/{{ c.id }}/editar" class="btn btn-sm btn-outline-primary" title="Editar"><i class="bi bi-pencil"></i></a>
+            <form method="post" action="/contratos/{{ c.id }}/excluir" class="d-inline"
+                  onsubmit="return confirm('Excluir o contrato #{{ c.id }}?');">
+              <button class="btn btn-sm btn-outline-danger" title="Excluir"><i class="bi bi-trash"></i></button>
+            </form>
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="9" class="text-center text-muted py-4">Nenhum contrato encontrado.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

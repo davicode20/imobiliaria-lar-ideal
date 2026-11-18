@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Editar' if contrato.id else 'Novo' }} contrato · Lar Ideal{% endblock %}
+{% block content %}
+<h2 class="mb-3">{{ 'Editar contrato #' ~ contrato.id if contrato.id else 'Novo contrato' }}</h2>
+
+{% if not imoveis %}
+<div class="alert alert-warning">Não há imóveis disponíveis no momento. <a href="/imoveis/novo" class="alert-link">Cadastre um imóvel</a>.</div>
+{% endif %}
+
+<div class="card shadow-sm">
+  <div class="card-body">
+    <form method="post" action="{{ '/contratos/' ~ contrato.id ~ '/editar' if contrato.id else '/contratos/novo' }}">
+      <div class="row g-3">
+        <div class="col-md-4">
+          <label class="form-label">Tipo de contrato</label>
+          <select name="tipo" id="tipo" class="form-select" required>
+            {% for t in tipos %}<option value="{{ t }}" {{ 'selected' if contrato.tipo == t }}>{{ t | rotulo }}</option>{% endfor %}
+          </select>
+        </div>
+        <div class="col-md-8">
+          <label class="form-label">Imóvel</label>
+          <select name="imovel_id" id="imovel" class="form-select" required>
+            <option value="">Selecione...</option>
+            {% for i in imoveis %}
+            <option value="{{ i.id }}" data-finalidade="{{ i.finalidade }}" data-valor="{{ i.valor }}"
+                    {{ 'selected' if contrato.imovel_id == i.id }}>
+              {{ i.titulo }} — {{ i.finalidade | rotulo }} — {{ i.valor | moeda }} (dono: {{ i.proprietario }})
+            </option>
+            {% endfor %}
+          </select>
+          <div class="form-text">Aparecem só imóveis disponíveis e compatíveis com o tipo escolhido.</div>
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label">Cliente (inquilino / comprador)</label>
+          <select name="cliente_id" class="form-select" required>
+            <option value="">Selecione...</option>
+            {% for c in clientes %}
+            <option value="{{ c.id }}" {{ 'selected' if contrato.cliente_id == c.id }}>{{ c.nome }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Valor (R$)</label>
+          <input type="number" name="valor" id="valor" class="form-control" min="0.01" step="0.01"
+                 value="{{ contrato.valor if contrato.valor is not none else '' }}" required>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Status</label>
+          <select name="status" class="form-select" required>
+            {% for s in status_lista %}<option value="{{ s }}" {{ 'selected' if contrato.status == s }}>{{ s | rotulo }}</option>{% endfor %}
+          </select>
+        </div>
+
+        <div class="col-md-3">
+          <label class="form-label">Data de início</label>
+          <input type="date" name="data_inicio" id="data_inicio" class="form-control" value="{{ contrato.data_inicio or '' }}" required>
+        </div>
+        <div class="col-md-3" id="grupo_fim">
+          <label class="form-label">Data de término</label>
+          <input type="date" name="data_fim" id="data_fim" class="form-control" value="{{ contrato.data_fim or '' }}">
+          <div class="form-text">Não se aplica a vendas.</div>
+        </div>
+      </div>
+
+      <div class="alert alert-info small mt-4 mb-0">
+        <i class="bi bi-info-circle"></i> Ao salvar, o status do imóvel é atualizado na mesma transação:
+        locação ativa → <strong>Alugado</strong>; venda → <strong>Vendido</strong>;
+        locação encerrada ou contrato cancelado → <strong>Disponível</strong>.
+      </div>
+
+      <div class="mt-4">
+        <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg"></i> Salvar</button>
+        <a href="/contratos" class="btn btn-outline-secondary">Cancelar</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  // Ajustes de usabilidade (a validação de verdade acontece no servidor)
+  const tipo = document.getElementById('tipo');
+  const imovel = document.getElementById('imovel');
+  const valor = document.getElementById('valor');
+  const grupoFim = document.getElementById('grupo_fim');
+  const dataFim = document.getElementById('data_fim');
+  const dataInicio = document.getElementById('data_inicio');
+  const finalidade = { LOCACAO: 'ALUGUEL', VENDA: 'VENDA' };
+
+  function atualizarTela() {
+    const venda = tipo.value === 'VENDA';
+    grupoFim.style.display = venda ? 'none' : '';
+    dataFim.required = !venda;
+    if (venda) dataFim.value = '';
+    // Esconde imóveis com finalidade diferente do tipo de contrato
+    for (const opt of imovel.options) {
+      if (!opt.value) continue;
+      const ok = opt.dataset.finalidade === finalidade[tipo.value];
+      opt.hidden = !ok;
+      if (!ok && opt.selected) imovel.value = '';
+    }
+  }
+
+  imovel.addEventListener('change', () => {
+    const opt = imovel.selectedOptions[0];
+    if (opt && opt.dataset.valor && !valor.value) valor.value = opt.dataset.valor;
+  });
+  dataInicio.addEventListener('change', () => { dataFim.min = dataInicio.value; });
+  tipo.addEventListener('change', atualizarTela);
+  atualizarTela();
+  dataFim.min = dataInicio.value;
+</script>
+{% endblock %}

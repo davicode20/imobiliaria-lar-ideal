@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Editar' if registro.id else 'Novo' }} usuário · Lar Ideal{% endblock %}
+{% block content %}
+<h2 class="mb-3">{{ 'Editar usuário' if registro.id else 'Novo usuário' }}</h2>
+
+<div class="card shadow-sm">
+  <div class="card-body">
+    <form method="post" action="{{ '/usuarios/' ~ registro.id ~ '/editar' if registro.id else '/usuarios/novo' }}">
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label class="form-label">Nome</label>
+          <input type="text" name="nome" class="form-control" maxlength="100" value="{{ registro.nome or '' }}" required>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Login</label>
+          <input type="text" name="usuario" class="form-control" maxlength="50" pattern="[A-Za-z0-9._-]+"
+                 title="Use letras, números, ponto, hífen ou sublinhado" value="{{ registro.usuario or '' }}" required>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Senha</label>
+          <input type="password" name="senha" class="form-control" minlength="6" autocomplete="new-password" {{ '' if registro.id else 'required' }}>
+          {% if registro.id %}<div class="form-text">Deixe em branco para manter a senha atual.</div>{% endif %}
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Confirmar senha</label>
+          <input type="password" name="confirmar" class="form-control" minlength="6" autocomplete="new-password" {{ '' if registro.id else 'required' }}>
+        </div>
+      </div>
+      <div class="mt-4">
+        <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg"></i> Salvar</button>
+        <a href="/usuarios" class="btn btn-outline-secondary">Cancelar</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

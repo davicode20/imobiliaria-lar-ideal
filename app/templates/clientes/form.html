@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Editar' if cliente.id else 'Novo' }} cliente · Lar Ideal{% endblock %}
+{% block content %}
+<h2 class="mb-3">{{ 'Editar cliente' if cliente.id else 'Novo cliente' }}</h2>
+
+<div class="card shadow-sm">
+  <div class="card-body">
+    <form method="post" action="{{ '/clientes/' ~ cliente.id ~ '/editar' if cliente.id else '/clientes/novo' }}">
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label class="form-label">Nome</label>
+          <input type="text" name="nome" class="form-control" maxlength="100" value="{{ cliente.nome or '' }}" required>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">CPF</label>
+          <input type="text" name="cpf" class="form-control" maxlength="14" placeholder="Somente números" value="{{ cliente.cpf or '' }}" required>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Telefone</label>
+          <input type="text" name="telefone" class="form-control" maxlength="20" value="{{ cliente.telefone or '' }}" required>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">E-mail</label>
+          <input type="email" name="email" class="form-control" maxlength="100" value="{{ cliente.email or '' }}">
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Tipo</label>
+          <select name="tipo" class="form-select" required>
+            {% for t in tipos %}
+            <option value="{{ t }}" {{ 'selected' if cliente.tipo == t }}>{{ t | rotulo }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+      <div class="mt-4">
+        <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg"></i> Salvar</button>
+        <a href="/clientes" class="btn btn-outline-secondary">Cancelar</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

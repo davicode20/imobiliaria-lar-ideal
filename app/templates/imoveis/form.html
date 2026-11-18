@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Editar' if imovel.id else 'Novo' }} imóvel · Lar Ideal{% endblock %}
+{% block content %}
+<h2 class="mb-3">{{ 'Editar imóvel' if imovel.id else 'Novo imóvel' }}</h2>
+
+{% if not proprietarios %}
+<div class="alert alert-warning">
+  Nenhum cliente do tipo <strong>Proprietário</strong> ou <strong>Ambos</strong> cadastrado.
+  <a href="/clientes/novo" class="alert-link">Cadastre um cliente</a> primeiro.
+</div>
+{% endif %}
+
+<div class="card shadow-sm">
+  <div class="card-body">
+    <form method="post" action="{{ '/imoveis/' ~ imovel.id ~ '/editar' if imovel.id else '/imoveis/novo' }}">
+      <div class="row g-3">
+        <div class="col-md-8">
+          <label class="form-label">Título do anúncio</label>
+          <input type="text" name="titulo" class="form-control" maxlength="100" value="{{ imovel.titulo or '' }}" required>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Proprietário</label>
+          <select name="proprietario_id" class="form-select" required>
+            <option value="">Selecione...</option>
+            {% for p in proprietarios %}
+            <option value="{{ p.id }}" {{ 'selected' if imovel.proprietario_id == p.id }}>{{ p.nome }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label">Tipo</label>
+          <select name="tipo" class="form-select" required>
+            {% for t in tipos %}<option value="{{ t }}" {{ 'selected' if imovel.tipo == t }}>{{ t | rotulo }}</option>{% endfor %}
+          </select>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Finalidade</label>
+          <select name="finalidade" class="form-select" required>
+            {% for f in finalidades %}<option value="{{ f }}" {{ 'selected' if imovel.finalidade == f }}>{{ f | rotulo }}</option>{% endfor %}
+          </select>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Status</label>
+          <select name="status" class="form-select" required>
+            {% for s in status_lista %}<option value="{{ s }}" {{ 'selected' if imovel.status == s }}>{{ s | rotulo }}</option>{% endfor %}
+          </select>
+          <div class="form-text">Atualizado automaticamente ao criar/encerrar contratos.</div>
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label">Endereço</label>
+          <input type="text" name="endereco" class="form-control" maxlength="150" value="{{ imovel.endereco or '' }}" required>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Bairro</label>
+          <input type="text" name="bairro" class="form-control" maxlength="80" value="{{ imovel.bairro or '' }}" required>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Cidade</label>
+          <input type="text" name="cidade" class="form-control" maxlength="80" value="{{ imovel.cidade or 'Palmas' }}" required>
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label">Área (m²)</label>
+          <input type="number" name="area_m2" class="form-control" min="0.01" step="0.01" value="{{ imovel.area_m2 if imovel.area_m2 is not none else '' }}" required>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Quartos</label>
+          <input type="number" name="quartos" class="form-control" min="0" max="255" step="1" value="{{ imovel.quartos if imovel.quartos is not none else 0 }}" required>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Valor (R$)</label>
+          <input type="number" name="valor" class="form-control" min="0.01" step="0.01" value="{{ imovel.valor if imovel.valor is not none else '' }}" required>
+          <div class="form-text">Preço de venda ou aluguel mensal.</div>
+        </div>
+      </div>
+      <div class="mt-4">
+        <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg"></i> Salvar</button>
+        <a href="/imoveis" class="btn btn-outline-secondary">Cancelar</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
