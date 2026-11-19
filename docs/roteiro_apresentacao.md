@@ -2,9 +2,13 @@
 
 **Dupla:** Davi Barbosa Brito e Igo Patrick
 
-> **Antes de começar:** MySQL rodando, `uvicorn app.main:app --reload` no ar, navegador em
-> http://127.0.0.1:8000 **já deslogado**, Workbench aberto com o `sql/script_imobiliaria.sql`
-> e a imagem `docs/der.png` em outra aba.
+> **Antes de começar:**
+> - Navegador em **https://imobiliaria-lar-ideal.vercel.app**, **já deslogado**.
+> - Rodar o `sql/script_imobiliaria.sql` de novo no banco do Aiven, para apagar os cadastros dos ensaios.
+> - Workbench conectado ao Aiven (host, porta e usuário `avnadmin` do `.env`; aba **SSL**: *Require and
+>   Verify CA*, arquivo `certs/ca.pem`), com o script aberto, e a imagem `docs/der.png` em outra aba.
+> - **Plano B (sem internet):** MariaDB local (`sudo systemctl start mariadb`), script rodado nele, `.env`
+>   apontando para `127.0.0.1` sem `DB_SSL_CA` e `uvicorn app.main:app --reload` em http://127.0.0.1:8000.
 
 | Tempo | Quem | Assunto |
 |---|---|---|
@@ -23,6 +27,8 @@
 - Solução: um sistema web com login em que tudo fica gravado no MySQL, com regras garantidas pelo próprio banco.
 - Tecnologias: **Python + FastAPI**, **MySQL**, **Jinja2 + Bootstrap 5** e **PyMySQL** com SQL puro, sem ORM,
   justamente para mostrar os comandos SQL.
+- O sistema está **publicado na internet**: a aplicação roda no **Vercel** e os dados ficam num **MySQL 8 no
+  Aiven**, um serviço de banco na nuvem. Qualquer pessoa da turma pode abrir o link e testar.
 
 ## 2. Banco de dados (2:00) — mostrar `docs/der.png`
 - Banco **`imobiliaria_lar_ideal_db`** com **4 tabelas**, todas com PK `AUTO_INCREMENT`:
@@ -34,7 +40,7 @@
   `ENUM` para valores fixos, `DATE` para datas.
 - Regras no banco: `ON DELETE RESTRICT` (não deixa apagar um cliente que tem imóvel) e
   `CHECK (data_fim >= data_inicio)`.
-- No Workbench, mostrar rapidamente: `CREATE DATABASE`, `CREATE TABLE contratos` (FKs) e os `INSERT`s.
+- No Workbench (conectado ao MySQL do Aiven), mostrar rapidamente: `CREATE DATABASE`, `CREATE TABLE contratos` (FKs) e os `INSERT`s.
 
 ## 3. Demonstração (4:00)
 1. **Login** com uma senha errada (aparece o alerta) e depois com `admin / admin123`.
@@ -55,6 +61,9 @@
   **commit** se der tudo certo ou **rollback** se der erro.
 - Fluxo: formulário HTML → `POST` → rota FastAPI (`app/routers/*.py`) → SQL com parâmetros `%s`
   (protege contra SQL Injection) → MySQL → redirect → listagem atualizada.
+- Na versão online: navegador → **Vercel** (roda o FastAPI) → conexão **SSL** criptografada → **MySQL no Aiven**.
+  O endereço e a senha do banco ficam em **variáveis de ambiente** (o `.env` local e as configurações do Vercel),
+  nunca no código nem no GitHub. A cada `git push`, o Vercel publica a versão nova sozinho.
 - Mostrar em `app/routers/contratos.py` a função `criar`: **INSERT** do contrato + **UPDATE** do status do
   imóvel na **mesma transação**. Ou grava os dois, ou nenhum.
 - Mostrar o `SELECT ... INNER JOIN` da listagem de contratos.
@@ -62,7 +71,7 @@
 
 ## 5. Encerramento (0:30)
 - Requisitos cumpridos: 4 tabelas, PK/FK, ≥ 5 registros por tabela, login com usuário e senha,
-  CRUD completo, pesquisa, JOIN e dados gravados de verdade no MySQL.
+  CRUD completo, pesquisa, JOIN e dados gravados de verdade no MySQL, com o sistema publicado na internet.
 - Melhorias futuras: senha com bcrypt, níveis de permissão, upload de fotos dos imóveis, relatórios.
 
 ---
@@ -73,4 +82,8 @@
 - **Por que não usar ORM?** Para os comandos SQL aparecerem explicitamente no código, que é o foco da disciplina.
 - **O que acontece se apagar um imóvel com contrato?** O MySQL bloqueia (FK com RESTRICT, erro 1451) e o app mostra o aviso.
 - **Como a senha é verificada?** O app calcula o SHA-256 da senha digitada e compara com o `senha_hash` no `SELECT` do login.
+- **Onde ficam os dados da versão online?** Num MySQL 8 de verdade, hospedado no Aiven. O Vercel só roda a
+  aplicação e não guarda dados. Dá para abrir o mesmo banco no Workbench e ver os registros mudando.
+- **A senha do banco está no GitHub?** Não. Ela fica no `.env`, que está no `.gitignore`, e nas variáveis de
+  ambiente do Vercel. No GitHub só vai o `certs/ca.pem`, que é um certificado público.
 - **Por que a tabela `usuarios` não tem FK?** Ela só controla quem acessa o sistema; não participa das regras do negócio.

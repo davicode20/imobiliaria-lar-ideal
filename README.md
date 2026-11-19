@@ -6,11 +6,14 @@ Sistema web para gestão de uma imobiliária, com **clientes**, **imóveis**, **
 
 **Dupla:** Davi Barbosa Brito e Igo Patrick
 
+🌐 **Sistema online:** https://imobiliaria-lar-ideal.vercel.app (usuário `admin`, senha `admin123`)
+
 ## Tecnologias
 - **Python 3 + FastAPI**: rotas e regras de negócio
-- **MySQL 8**: banco relacional (`imobiliaria_lar_ideal_db`)
+- **MySQL 8**: banco relacional (`imobiliaria_lar_ideal_db`), hospedado no **Aiven** com conexão SSL
 - **PyMySQL** com **SQL puro, sem ORM**, para deixar visíveis os comandos `INSERT`, `SELECT`, `UPDATE`, `DELETE` e `JOIN`
 - **Jinja2 + Bootstrap 5**: telas
+- **Vercel**: hospedagem da aplicação (deploy automático a cada `git push` na `main`)
 
 ## Funcionalidades
 - Login e logout com sessão; senhas guardadas como hash SHA-256
@@ -46,8 +49,10 @@ O script completo (criação, carga de dados e consultas de demonstração) est�
 3. Acesse http://127.0.0.1:8000 e entre com **admin / admin123**.
 
 ## Deploy no Vercel
+A versão publicada está em https://imobiliaria-lar-ideal.vercel.app.
+
 O Vercel detecta o FastAPI em `app/main.py` automaticamente. Como ele não hospeda MySQL, o banco fica num
-serviço de MySQL na nuvem (ex.: **Aiven**, plano gratuito), que exige conexão com SSL.
+serviço de MySQL na nuvem (aqui, o **Aiven**, usando os créditos de teste), que exige conexão com SSL.
 1. Crie o MySQL na nuvem e rode `sql/script_imobiliaria.sql` nele (pelo Workbench, por exemplo).
 2. Se o provedor fornecer um certificado (`ca.pem`, no caso do Aiven), salve-o em `certs/ca.pem`.
 3. No Vercel: **Add New → Project → Import** deste repositório do GitHub.
@@ -59,11 +64,12 @@ serviço de MySQL na nuvem (ex.: **Aiven**, plano gratuito), que exige conexão 
 ```
 app/
 ├── main.py            # app, login/logout e painel
-├── database.py        # conexão MySQL (commit/rollback)
+├── database.py        # conexão MySQL (SSL, commit/rollback)
 ├── auth.py            # hash de senha e proteção das rotas
 ├── templating.py      # templates e filtros (moeda, data, CPF)
 ├── routers/           # clientes, imoveis, contratos, usuarios (CRUD)
 └── templates/         # páginas HTML (Jinja2 + Bootstrap)
 sql/script_imobiliaria.sql
+certs/ca.pem           # certificado SSL do MySQL no Aiven
 docs/                  # DER e roteiro da apresentação
 ```
