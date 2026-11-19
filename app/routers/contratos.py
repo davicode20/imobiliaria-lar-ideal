@@ -283,15 +283,15 @@ def atualizar(
 @router.post("/{contrato_id}/excluir")
 def excluir(request: Request, contrato_id: int):
     with get_cursor(commit=True) as cur:
-        cur.execute("SELECT imovel_id, status FROM contratos WHERE id = %s", (contrato_id,))
+        cur.execute("SELECT imovel_id, tipo, status FROM contratos WHERE id = %s", (contrato_id,))
         contrato = cur.fetchone()
         if not contrato:
             flash(request, "Contrato não encontrado.", "warning")
             return RedirectResponse("/contratos", status_code=303)
 
         cur.execute("DELETE FROM contratos WHERE id = %s", (contrato_id,))
-        # Contrato ativo apagado -> imóvel volta a ficar disponível
-        if contrato["status"] == "ATIVO":
+        # Contrato que "ocupava" o imóvel (Alugado/Vendido) apagado -> imóvel volta a ficar disponível
+        if status_do_imovel(contrato["tipo"], contrato["status"]) != "DISPONIVEL":
             cur.execute("UPDATE imoveis SET status = 'DISPONIVEL' WHERE id = %s", (contrato["imovel_id"],))
 
     flash(request, "Contrato excluído com sucesso.")
