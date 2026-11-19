@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 {% block title %}Imóveis · Lar Ideal{% endblock %}
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-3">
-  <h2 class="mb-0">Imóveis</h2>
+<div class="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-4">
+  <div><h2 class="mb-0">Imóveis</h2><div class="subtitulo">Carteira de imóveis para venda e aluguel.</div></div>
   <a href="/imoveis/novo" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Novo imóvel</a>
 </div>
 
@@ -34,25 +34,22 @@
   </div>
 </form>
 
-<p class="text-muted small mb-2">{{ imoveis | length }} imóvel(is) encontrado(s) · listagem com <code>INNER JOIN</code> em clientes para mostrar o proprietário</p>
+<div class="d-flex flex-wrap align-items-center gap-2 mb-2 small text-muted">{{ imoveis | length }} imóvel(is) encontrado(s) <span class="dica-sql"><i class="bi bi-database"></i><code>INNER JOIN</code> clientes → proprietário</span></div>
 
 <div class="card shadow-sm">
   <div class="table-responsive">
     <table class="table table-hover mb-0 align-middle">
-      <thead class="table-light">
-        <tr><th>Título</th><th>Tipo</th><th>Finalidade</th><th>Bairro</th><th>Proprietário</th>
-            <th class="text-end">Área</th><th class="text-center">Quartos</th><th class="text-end">Valor</th><th>Status</th><th class="text-end">Ações</th></tr>
+      <thead>
+        <tr><th>Imóvel</th><th>Bairro</th><th>Proprietário</th>
+            <th class="text-end">Área · Quartos</th><th class="text-end">Valor</th><th>Status</th><th class="text-end">Ações</th></tr>
       </thead>
       <tbody>
         {% for i in imoveis %}
         <tr>
-          <td>{{ i.titulo }}</td>
-          <td>{{ i.tipo | rotulo }}</td>
-          <td>{{ i.finalidade | rotulo }}</td>
+          <td>{{ i.titulo }}<div class="small text-muted">{{ i.tipo | rotulo }} · {{ i.finalidade | rotulo }}</div></td>
           <td>{{ i.bairro }}<div class="small text-muted">{{ i.cidade }}</div></td>
           <td>{{ i.proprietario }}</td>
-          <td class="text-end text-nowrap">{{ '%.0f' | format(i.area_m2) }} m²</td>
-          <td class="text-center">{{ i.quartos }}</td>
+          <td class="text-end text-nowrap">{{ '%.0f' | format(i.area_m2) }} m²<div class="small text-muted">{{ i.quartos }} quarto(s)</div></td>
           <td class="text-end text-nowrap">{{ i.valor | moeda }}{% if i.finalidade == 'ALUGUEL' %}<span class="small text-muted">/mês</span>{% endif %}</td>
           <td><span class="badge text-bg-{{ i.status | cor }}">{{ i.status | rotulo }}</span></td>
           <td class="text-end text-nowrap">
@@ -67,7 +64,7 @@
           </td>
         </tr>
         {% else %}
-        <tr><td colspan="10" class="text-center text-muted py-4">Nenhum imóvel encontrado.</td></tr>
+        <tr><td colspan="7" class="text-center text-muted py-4">Nenhum imóvel encontrado.</td></tr>
         {% endfor %}
       </tbody>
     </table>

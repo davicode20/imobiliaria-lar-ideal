@@ -1,25 +1,33 @@
 {% extends "base.html" %}
-{% block title %}Login · Lar Ideal{% endblock %}
-{% block content %}
-<div class="row justify-content-center align-items-center" style="min-height: 80vh;">
-  <div class="col-md-4">
-    <div class="card shadow-sm">
-      <div class="card-body p-4">
-        <h3 class="text-center text-primary mb-1"><i class="bi bi-house-door-fill"></i> Lar Ideal</h3>
-        <p class="text-center text-muted mb-4">Sistema da Imobiliária</p>
-        <form method="post" action="/login">
-          <div class="mb-3">
-            <label class="form-label">Usuário</label>
-            <input type="text" name="usuario" class="form-control" value="{{ usuario_digitado or '' }}" required autofocus>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Senha</label>
-            <input type="password" name="senha" class="form-control" required>
-          </div>
-          <button type="submit" class="btn btn-primary w-100">Entrar</button>
-        </form>
-      </div>
+{% block title %}Entrar · Lar Ideal{% endblock %}
+{% block publico %}
+<div class="login-pagina">
+  <section class="login-marca">
+    <div class="marca"><i class="bi bi-house-heart-fill"></i> Lar Ideal</div>
+    <div>
+      <h1>Clientes, imóveis e contratos num só lugar.</h1>
+      <p class="descricao">Sistema de gestão da Imobiliária Lar Ideal, em Palmas–TO.</p>
     </div>
-  </div>
+    <p class="small mb-0">Trabalho de Banco de Dados · FastAPI + MySQL</p>
+  </section>
+
+  <section class="login-form">
+    <form method="post" action="/login">
+      <h2 class="mb-1">Entrar</h2>
+      <p class="subtitulo mb-4">Use seu usuário e senha do sistema.</p>
+
+      {{ alertas(mensagens) }}
+
+      <div class="mb-3">
+        <label class="form-label" for="usuario">Usuário</label>
+        <input type="text" id="usuario" name="usuario" class="form-control form-control-lg" value="{{ usuario_digitado or '' }}" required autofocus>
+      </div>
+      <div class="mb-4">
+        <label class="form-label" for="senha">Senha</label>
+        <input type="password" id="senha" name="senha" class="form-control form-control-lg" required>
+      </div>
+      <button type="submit" class="btn btn-primary btn-lg w-100">Entrar</button>
+    </form>
+  </section>
 </div>
 {% endblock %}

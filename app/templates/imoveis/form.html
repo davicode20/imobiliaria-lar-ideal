@@ -1,7 +1,8 @@
 {% extends "base.html" %}
 {% block title %}{{ 'Editar' if imovel.id else 'Novo' }} imóvel · Lar Ideal{% endblock %}
 {% block content %}
-<h2 class="mb-3">{{ 'Editar imóvel' if imovel.id else 'Novo imóvel' }}</h2>
+<a href="/imoveis" class="small text-decoration-none"><i class="bi bi-arrow-left"></i> Imóveis</a>
+<h2 class="mt-1 mb-4">{{ 'Editar imóvel' if imovel.id else 'Novo imóvel' }}</h2>
 
 {% if not proprietarios %}
 <div class="alert alert-warning">
@@ -11,7 +12,7 @@
 {% endif %}
 
 <div class="card shadow-sm">
-  <div class="card-body">
+  <div class="card-body p-4">
     <form method="post" action="{{ '/imoveis/' ~ imovel.id ~ '/editar' if imovel.id else '/imoveis/novo' }}">
       <div class="row g-3">
         <div class="col-md-8">

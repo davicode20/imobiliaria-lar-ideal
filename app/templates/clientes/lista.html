@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 {% block title %}Clientes · Lar Ideal{% endblock %}
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-3">
-  <h2 class="mb-0">Clientes</h2>
+<div class="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-4">
+  <div><h2 class="mb-0">Clientes</h2><div class="subtitulo">Proprietários de imóveis e pessoas interessadas em alugar ou comprar.</div></div>
   <a href="/clientes/novo" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Novo cliente</a>
 </div>
 
@@ -19,7 +19,7 @@
 <div class="card shadow-sm">
   <div class="table-responsive">
     <table class="table table-hover mb-0 align-middle">
-      <thead class="table-light">
+      <thead>
         <tr><th>Nome</th><th>CPF</th><th>Telefone</th><th>E-mail</th><th>Tipo</th><th class="text-end">Ações</th></tr>
       </thead>
       <tbody>

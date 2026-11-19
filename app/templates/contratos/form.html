@@ -1,14 +1,15 @@
 {% extends "base.html" %}
 {% block title %}{{ 'Editar' if contrato.id else 'Novo' }} contrato · Lar Ideal{% endblock %}
 {% block content %}
-<h2 class="mb-3">{{ 'Editar contrato #' ~ contrato.id if contrato.id else 'Novo contrato' }}</h2>
+<a href="/contratos" class="small text-decoration-none"><i class="bi bi-arrow-left"></i> Contratos</a>
+<h2 class="mt-1 mb-4">{{ 'Editar contrato #' ~ contrato.id if contrato.id else 'Novo contrato' }}</h2>
 
 {% if not imoveis %}
 <div class="alert alert-warning">Não há imóveis disponíveis no momento. <a href="/imoveis/novo" class="alert-link">Cadastre um imóvel</a>.</div>
 {% endif %}
 
 <div class="card shadow-sm">
-  <div class="card-body">
+  <div class="card-body p-4">
     <form method="post" action="{{ '/contratos/' ~ contrato.id ~ '/editar' if contrato.id else '/contratos/novo' }}">
       <div class="row g-3">
         <div class="col-md-4">

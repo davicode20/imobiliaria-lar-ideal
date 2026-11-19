@@ -1,0 +1,185 @@
+/* =========================================================
+   Imobiliária Lar Ideal — identidade visual
+   Bootstrap 5 continua sendo a base; aqui ficam só as cores,
+   fontes e ajustes que dão a cara da empresa.
+   ========================================================= */
+
+:root {
+  --li-verde: #1e4d44;          /* cor principal da marca */
+  --li-verde-escuro: #163a33;
+  --li-verde-claro: #e6efec;
+  --li-terracota: #c46a3c;      /* destaque */
+  --li-fundo: #f5f3ee;          /* fundo levemente quente */
+  --li-borda: #e4e0d7;
+  --li-texto: #1f2a27;
+  --li-suave: #6b7571;
+
+  --bs-body-font-family: "DM Sans", system-ui, sans-serif;
+  --bs-body-color: var(--li-texto);
+  --bs-body-bg: var(--li-fundo);
+  --bs-primary: var(--li-verde);
+  --bs-primary-rgb: 30, 77, 68;
+  --bs-link-color: var(--li-verde);
+  --bs-link-color-rgb: 30, 77, 68;
+  --bs-link-hover-color: var(--li-terracota);
+  --bs-border-color: var(--li-borda);
+  --bs-border-radius: .5rem;
+}
+
+body { background: var(--li-fundo); }
+
+h1, h2, h3, .marca { font-family: "Fraunces", Georgia, serif; font-weight: 600; letter-spacing: -.01em; }
+
+/* ---------- Botões ---------- */
+.btn { font-weight: 500; }
+.btn-primary {
+  --bs-btn-bg: var(--li-verde); --bs-btn-border-color: var(--li-verde);
+  --bs-btn-hover-bg: var(--li-verde-escuro); --bs-btn-hover-border-color: var(--li-verde-escuro);
+  --bs-btn-active-bg: var(--li-verde-escuro); --bs-btn-active-border-color: var(--li-verde-escuro);
+  --bs-btn-disabled-bg: var(--li-verde); --bs-btn-disabled-border-color: var(--li-verde);
+}
+.btn-outline-primary {
+  --bs-btn-color: var(--li-verde); --bs-btn-border-color: var(--li-borda);
+  --bs-btn-hover-bg: var(--li-verde-claro); --bs-btn-hover-color: var(--li-verde); --bs-btn-hover-border-color: var(--li-verde);
+  --bs-btn-active-bg: var(--li-verde-claro); --bs-btn-active-color: var(--li-verde); --bs-btn-active-border-color: var(--li-verde);
+  background: #fff;
+}
+.btn-outline-secondary { --bs-btn-border-color: var(--li-borda); background: #fff; }
+.btn-outline-danger { --bs-btn-border-color: var(--li-borda); background: #fff; }
+.btn-outline-success { --bs-btn-border-color: var(--li-borda); background: #fff; }
+
+.form-control:focus, .form-select:focus {
+  border-color: var(--li-verde);
+  box-shadow: 0 0 0 .2rem rgba(30, 77, 68, .15);
+}
+.form-control, .form-select { background-color: #fff; }
+main a:not(.btn):not(.indicador), .card a:not(.btn) { text-decoration: none; font-weight: 500; }
+main a:not(.btn):not(.indicador):hover { text-decoration: underline; }
+.list-group-item { padding: .85rem 1.25rem; border-color: #efece5; }
+.form-label { font-weight: 500; font-size: .9rem; color: var(--li-suave); }
+
+/* ---------- Layout com barra lateral ---------- */
+.layout { display: flex; min-height: 100vh; }
+
+.lateral {
+  width: 240px; flex-shrink: 0;
+  background: var(--li-verde); color: #fff;
+  display: flex; flex-direction: column;
+  position: sticky; top: 0; height: 100vh;
+  padding: 1.5rem 1rem;
+}
+.lateral .marca { font-size: 1.35rem; color: #fff; text-decoration: none; display: flex; align-items: center; gap: .5rem; padding: 0 .5rem; }
+.lateral .marca i { color: #f0b48f; }
+.lateral .slogan { font-size: .75rem; color: rgba(255,255,255,.6); padding: 0 .5rem; margin-bottom: 2rem; }
+.lateral .nav-link {
+  color: rgba(255,255,255,.75); border-radius: .4rem;
+  padding: .55rem .75rem; margin-bottom: .15rem;
+  display: flex; align-items: center; gap: .65rem;
+}
+.lateral .nav-link:hover { color: #fff; background: rgba(255,255,255,.08); }
+.lateral .nav-link.active { color: #fff; background: rgba(255,255,255,.14); font-weight: 600; }
+.lateral .usuario {
+  margin-top: auto; border-top: 1px solid rgba(255,255,255,.15);
+  padding: 1rem .5rem 0; font-size: .9rem;
+}
+.lateral .usuario a { color: rgba(255,255,255,.7); text-decoration: none; font-size: .85rem; }
+.lateral .usuario a:hover { color: #fff; }
+
+.conteudo { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.conteudo main { flex: 1; padding: 2rem 2.25rem; max-width: 1280px; width: 100%; }
+.rodape { font-size: .8rem; color: var(--li-suave); padding: 1rem 2.25rem; border-top: 1px solid var(--li-borda); }
+
+/* Barra superior que só aparece no celular */
+.topo-mobile { display: none; }
+@media (max-width: 991.98px) {
+  .layout { flex-direction: column; }
+  .lateral { display: none; }
+  .lateral.aberta { display: flex; position: fixed; inset: 0 auto 0 0; z-index: 1050; box-shadow: 0 0 0 100vw rgba(0,0,0,.35); }
+  .topo-mobile {
+    display: flex; align-items: center; justify-content: space-between;
+    background: var(--li-verde); color: #fff; padding: .75rem 1rem;
+  }
+  .topo-mobile .marca { color: #fff; text-decoration: none; font-size: 1.15rem; }
+  .topo-mobile button { background: none; border: 0; color: #fff; font-size: 1.5rem; line-height: 1; }
+  .conteudo main { padding: 1.25rem 1rem; }
+  .rodape { padding: 1rem; }
+}
+
+/* ---------- Títulos de página ---------- */
+main h2 { font-size: 1.75rem; }
+.subtitulo { color: var(--li-suave); margin-top: .15rem; font-size: .95rem; }
+
+/* ---------- Cartões e tabelas ---------- */
+.card { border: 1px solid var(--li-borda); box-shadow: none !important; border-radius: .75rem; }
+.card-header { background: #fff !important; border-bottom: 1px solid var(--li-borda); padding: .9rem 1.25rem; }
+.card > .table-responsive:first-child { border-radius: .75rem; }
+
+.table { --bs-table-hover-bg: #faf8f4; margin-bottom: 0; }
+.table > thead th {
+  background: #faf8f4 !important; color: var(--li-suave);
+  font-size: .75rem; font-weight: 600; text-transform: uppercase; letter-spacing: .04em;
+  border-bottom: 1px solid var(--li-borda); padding-top: .75rem; padding-bottom: .75rem;
+}
+.table > tbody td { padding-top: .8rem; padding-bottom: .8rem; border-color: #efece5; }
+.table > tbody tr:last-child td { border-bottom: 0; }
+.table td:first-child, .table th:first-child { padding-left: 1.25rem; }
+.table td:last-child, .table th:last-child { padding-right: 1.25rem; }
+
+/* ---------- Badges suaves (status e tipos) ---------- */
+.badge { font-weight: 600; font-size: .75rem; padding: .35em .65em; border-radius: 999px; }
+.badge.text-bg-success   { background: #e2f0e6 !important; color: #23673b !important; }
+.badge.text-bg-warning   { background: #fbecd9 !important; color: #94530f !important; }
+.badge.text-bg-secondary { background: #ebe9e4 !important; color: #57605c !important; }
+.badge.text-bg-danger    { background: #f8e1de !important; color: #a3362a !important; }
+.badge.text-bg-primary   { background: var(--li-verde-claro) !important; color: var(--li-verde) !important; }
+.badge.text-bg-info      { background: #e2edf5 !important; color: #2b5d82 !important; }
+.badge.text-bg-dark      { background: #f3e5dc !important; color: #8a4523 !important; }
+
+/* ---------- Indicadores do painel ---------- */
+.indicador {
+  background: #fff; border: 1px solid var(--li-borda); border-radius: .75rem;
+  padding: 1.1rem 1.25rem; height: 100%; display: block; color: inherit; text-decoration: none;
+  transition: border-color .15s;
+}
+a.indicador:hover { border-color: var(--li-verde); color: inherit; }
+.indicador .rotulo { font-size: .8rem; color: var(--li-suave); display: flex; align-items: center; gap: .4rem; }
+.indicador .numero { font-size: 2rem; font-weight: 700; line-height: 1.2; margin-top: .25rem; font-variant-numeric: tabular-nums; }
+.indicador .detalhe { font-size: .8rem; color: var(--li-suave); }
+.indicador.destaque { background: var(--li-verde); border-color: var(--li-verde); color: #fff; }
+.indicador.destaque .rotulo, .indicador.destaque .detalhe { color: rgba(255,255,255,.7); }
+
+/* ---------- Dica de SQL (para a apresentação) ---------- */
+.dica-sql {
+  display: inline-flex; align-items: center; gap: .35rem;
+  font-size: .75rem; color: var(--li-suave);
+  background: #fff; border: 1px dashed var(--li-borda); border-radius: 999px; padding: .15rem .6rem;
+}
+.dica-sql code { color: var(--li-terracota); font-size: .75rem; }
+
+/* ---------- Alertas ---------- */
+.alert { border-radius: .6rem; border-width: 1px; }
+
+/* ---------- Login ---------- */
+.login-pagina { min-height: 100vh; display: flex; }
+.login-marca {
+  flex: 1; background: var(--li-verde); color: #fff;
+  display: flex; flex-direction: column; justify-content: space-between; padding: 3rem;
+  background-image: radial-gradient(circle at 85% 15%, rgba(240,180,143,.18), transparent 45%);
+}
+.login-marca .marca { font-size: 1.6rem; color: #fff; }
+.login-marca .marca i { color: #f0b48f; }
+.login-marca h1 { font-size: 2.6rem; line-height: 1.15; max-width: 22rem; }
+.login-marca p { color: rgba(255,255,255,.7); max-width: 24rem; }
+.login-form { flex: 1; display: flex; align-items: center; justify-content: center; padding: 2rem 1rem; }
+.login-form form { width: 100%; max-width: 360px; }
+@media (max-width: 767.98px) {
+  .login-pagina { flex-direction: column; }
+  .login-marca { flex: none; padding: 1.5rem; }
+  .login-marca h1, .login-marca p.descricao { display: none; }
+}
+
+.list-group-item .text-end a { white-space: nowrap; }
+.card { --bs-card-bg: #fff; }
+.table { --bs-table-bg: #fff; }
+.alert-info { background: var(--li-verde-claro); border-color: #cfe0db; color: var(--li-verde-escuro); }
+.alert-info strong { color: var(--li-verde); }

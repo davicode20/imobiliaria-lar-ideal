@@ -1,10 +1,11 @@
 {% extends "base.html" %}
 {% block title %}{{ 'Editar' if cliente.id else 'Novo' }} cliente · Lar Ideal{% endblock %}
 {% block content %}
-<h2 class="mb-3">{{ 'Editar cliente' if cliente.id else 'Novo cliente' }}</h2>
+<a href="/clientes" class="small text-decoration-none"><i class="bi bi-arrow-left"></i> Clientes</a>
+<h2 class="mt-1 mb-4">{{ 'Editar cliente' if cliente.id else 'Novo cliente' }}</h2>
 
 <div class="card shadow-sm">
-  <div class="card-body">
+  <div class="card-body p-4">
     <form method="post" action="{{ '/clientes/' ~ cliente.id ~ '/editar' if cliente.id else '/clientes/novo' }}">
       <div class="row g-3">
         <div class="col-md-6">

@@ -1,72 +1,77 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-  <h2 class="mb-0">Painel</h2>
+<div class="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-4">
+  <div>
+    <h2 class="mb-0">Olá, {{ request.session.get('usuario').nome.split()[0] }}</h2>
+    <div class="subtitulo">Resumo da carteira da imobiliária hoje.</div>
+  </div>
   <div class="d-flex gap-2">
-    <a href="/clientes/novo" class="btn btn-sm btn-outline-primary"><i class="bi bi-person-plus"></i> Cliente</a>
-    <a href="/imoveis/novo" class="btn btn-sm btn-outline-primary"><i class="bi bi-building-add"></i> Imóvel</a>
-    <a href="/contratos/novo" class="btn btn-sm btn-primary"><i class="bi bi-file-earmark-plus"></i> Contrato</a>
+    <a href="/clientes/novo" class="btn btn-outline-primary"><i class="bi bi-person-plus"></i> Cliente</a>
+    <a href="/imoveis/novo" class="btn btn-outline-primary"><i class="bi bi-plus-lg"></i> Imóvel</a>
+    <a href="/contratos/novo" class="btn btn-primary"><i class="bi bi-file-earmark-plus"></i> Novo contrato</a>
   </div>
 </div>
 
 <div class="row g-3 mb-4">
   <div class="col-6 col-lg">
-    <a href="/clientes" class="text-decoration-none"><div class="card text-bg-primary h-100"><div class="card-body">
-      <div class="small"><i class="bi bi-people"></i> Clientes</div>
-      <div class="fs-2 fw-bold">{{ resumo.total_clientes }}</div>
-    </div></div></a>
+    <a href="/clientes" class="indicador">
+      <div class="rotulo"><i class="bi bi-people"></i> Clientes</div>
+      <div class="numero">{{ resumo.total_clientes }}</div>
+      <div class="detalhe">proprietários e interessados</div>
+    </a>
   </div>
   <div class="col-6 col-lg">
-    <a href="/imoveis" class="text-decoration-none"><div class="card text-bg-secondary h-100"><div class="card-body">
-      <div class="small"><i class="bi bi-building"></i> Imóveis cadastrados</div>
-      <div class="fs-2 fw-bold">{{ resumo.total_imoveis }}</div>
-      <div class="small">{{ por_status.get('ALUGADO', 0) }} alugado(s) · {{ por_status.get('VENDIDO', 0) }} vendido(s)</div>
-    </div></div></a>
+    <a href="/imoveis" class="indicador">
+      <div class="rotulo"><i class="bi bi-buildings"></i> Imóveis</div>
+      <div class="numero">{{ resumo.total_imoveis }}</div>
+      <div class="detalhe">{{ por_status.get('ALUGADO', 0) }} alugado(s) · {{ por_status.get('VENDIDO', 0) }} vendido(s)</div>
+    </a>
   </div>
   <div class="col-6 col-lg">
-    <a href="/imoveis?status=DISPONIVEL" class="text-decoration-none"><div class="card text-bg-success h-100"><div class="card-body">
-      <div class="small"><i class="bi bi-door-open"></i> Imóveis disponíveis</div>
-      <div class="fs-2 fw-bold">{{ resumo.imoveis_disponiveis }}</div>
-    </div></div></a>
+    <a href="/imoveis?status=DISPONIVEL" class="indicador">
+      <div class="rotulo"><i class="bi bi-door-open"></i> Disponíveis</div>
+      <div class="numero">{{ resumo.imoveis_disponiveis }}</div>
+      <div class="detalhe">prontos para negociar</div>
+    </a>
   </div>
   <div class="col-6 col-lg">
-    <a href="/contratos?status=ATIVO" class="text-decoration-none"><div class="card text-bg-warning h-100"><div class="card-body">
-      <div class="small"><i class="bi bi-file-earmark-check"></i> Contratos ativos</div>
-      <div class="fs-2 fw-bold">{{ resumo.contratos_ativos }}</div>
-    </div></div></a>
+    <a href="/contratos?status=ATIVO" class="indicador">
+      <div class="rotulo"><i class="bi bi-file-earmark-check"></i> Contratos ativos</div>
+      <div class="numero">{{ resumo.contratos_ativos }}</div>
+      <div class="detalhe">locações e vendas em andamento</div>
+    </a>
   </div>
   <div class="col-12 col-lg">
-    <div class="card text-bg-dark h-100"><div class="card-body">
-      <div class="small"><i class="bi bi-cash-coin"></i> Aluguéis ativos / mês</div>
-      <div class="fs-3 fw-bold">{{ resumo.receita_aluguel | moeda }}</div>
-    </div></div>
+    <div class="indicador destaque">
+      <div class="rotulo"><i class="bi bi-cash-coin"></i> Aluguéis ativos por mês</div>
+      <div class="numero" style="font-size:1.6rem">{{ resumo.receita_aluguel | moeda }}</div>
+      <div class="detalhe">soma das locações ativas</div>
+    </div>
   </div>
 </div>
 
 <div class="row g-4">
-  <div class="col-lg-7">
+  <div class="col-xl-8">
     <div class="card shadow-sm h-100">
       <div class="card-header bg-white d-flex justify-content-between">
-        <span><strong>Últimos contratos</strong> <span class="text-muted small">(JOIN contratos × imóveis × clientes)</span></span>
-        <a href="/contratos" class="small">ver todos</a>
+        <span><strong>Últimos contratos</strong> <span class="dica-sql ms-2"><i class="bi bi-database"></i><code>JOIN</code> 4 tabelas</span></span>
+        <a href="/contratos" class="small">Ver todos <i class="bi bi-arrow-right"></i></a>
       </div>
       <div class="table-responsive">
         <table class="table table-hover mb-0 align-middle">
-          <thead class="table-light">
-            <tr><th>Tipo</th><th>Imóvel</th><th>Proprietário</th><th>Cliente</th><th class="text-end">Valor</th><th>Status</th></tr>
+          <thead>
+            <tr><th>Imóvel</th><th>Cliente</th><th class="text-end">Valor</th><th>Status</th></tr>
           </thead>
           <tbody>
             {% for c in ultimos_contratos %}
             <tr>
-              <td>{{ c.tipo | rotulo }}</td>
-              <td>{{ c.imovel }}<div class="small text-muted">desde {{ c.data_inicio | data_br }}</div></td>
-              <td>{{ c.proprietario }}</td>
-              <td>{{ c.cliente }}</td>
+              <td>{{ c.imovel }}<div class="small text-muted">Proprietário: {{ c.proprietario }}</div></td>
+              <td>{{ c.cliente }}<div class="small text-muted">{{ c.tipo | rotulo }} desde {{ c.data_inicio | data_br }}</div></td>
               <td class="text-end text-nowrap">{{ c.valor | moeda }}</td>
               <td><span class="badge text-bg-{{ c.status | cor }}">{{ c.status | rotulo }}</span></td>
             </tr>
             {% else %}
-            <tr><td colspan="6" class="text-center text-muted">Nenhum contrato cadastrado.</td></tr>
+            <tr><td colspan="4" class="text-center text-muted py-4">Nenhum contrato cadastrado.</td></tr>
             {% endfor %}
           </tbody>
         </table>
@@ -74,7 +79,7 @@
     </div>
   </div>
 
-  <div class="col-lg-5">
+  <div class="col-xl-4">
     <div class="card shadow-sm h-100">
       <div class="card-header bg-white"><strong>Imóveis disponíveis</strong></div>
       <ul class="list-group list-group-flush">
@@ -82,11 +87,11 @@
         <li class="list-group-item d-flex justify-content-between align-items-center">
           <div>
             {{ i.titulo }}
-            <div class="small text-muted">{{ i.bairro }} · {{ i.finalidade | rotulo }} · dono: {{ i.proprietario }}</div>
+            <div class="small text-muted">{{ i.bairro }} · {{ i.finalidade | rotulo }} · {{ i.proprietario }}</div>
           </div>
           <div class="text-end">
             <div class="fw-semibold text-nowrap">{{ i.valor | moeda }}</div>
-            <a href="/contratos/novo?imovel_id={{ i.id }}" class="small">fechar contrato</a>
+            <a href="/contratos/novo?imovel_id={{ i.id }}" class="small">Fechar contrato <i class="bi bi-arrow-right"></i></a>
           </div>
         </li>
         {% else %}

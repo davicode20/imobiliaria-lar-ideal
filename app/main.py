@@ -3,17 +3,19 @@ import os
 from dotenv import load_dotenv
 from fastapi import Depends, FastAPI, Form, Request
 from fastapi.responses import RedirectResponse
+from fastapi.staticfiles import StaticFiles
 from starlette.middleware.sessions import SessionMiddleware
 
 from app.auth import NaoAutenticado, hash_senha, usuario_logado
 from app.database import get_cursor
 from app.routers import clientes, contratos, imoveis, usuarios
-from app.templating import flash, templates
+from app.templating import BASE_DIR, flash, templates
 
 load_dotenv()
 
 app = FastAPI(title="Imobiliária Lar Ideal")
 app.add_middleware(SessionMiddleware, secret_key=os.getenv("SECRET_KEY", "troque-esta-chave"))
+app.mount("/static", StaticFiles(directory=BASE_DIR / "static"), name="static")
 app.include_router(clientes.router)
 app.include_router(imoveis.router)
 app.include_router(contratos.router)

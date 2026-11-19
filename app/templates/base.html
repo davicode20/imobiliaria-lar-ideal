@@ -4,51 +4,72 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}Imobiliária Lar Ideal{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Fraunces:opsz,wght@9..144,600&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="/static/css/estilo.css" rel="stylesheet">
 </head>
-<body class="bg-light">
+<body>
   {% set usuario = request.session.get('usuario') %}
-  {% if usuario %}
-  <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
-    <div class="container">
-      <a class="navbar-brand" href="/"><i class="bi bi-house-door-fill"></i> Lar Ideal</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="menu">
-        {% set caminho = request.url.path %}
-        <ul class="navbar-nav me-auto">
-          {% for href, icone, texto in [('/', 'speedometer2', 'Painel'), ('/clientes', 'people', 'Clientes'),
-                                        ('/imoveis', 'building', 'Imóveis'), ('/contratos', 'file-earmark-text', 'Contratos'),
-                                        ('/usuarios', 'person-gear', 'Usuários')] %}
-          {% set ativo = (caminho == '/') if href == '/' else caminho.startswith(href) %}
-          <li class="nav-item">
-            <a class="nav-link {{ 'active fw-semibold' if ativo }}" href="{{ href }}"><i class="bi bi-{{ icone }}"></i> {{ texto }}</a>
-          </li>
-          {% endfor %}
-        </ul>
-        <span class="navbar-text me-3"><i class="bi bi-person-circle"></i> {{ usuario.nome }}</span>
-        <a class="btn btn-outline-light btn-sm" href="/logout"><i class="bi bi-box-arrow-right"></i> Sair</a>
-      </div>
-    </div>
-  </nav>
-  {% endif %}
+  {% set mensagens = request.session.pop('flash', []) %}
 
-  <main class="container pb-5">
-    {% for m in request.session.pop('flash', []) %}
+  {% macro alertas(lista) %}
+    {% for m in lista %}
     <div class="alert alert-{{ m.tipo }} alert-dismissible fade show" role="alert">
       {{ m.mensagem }}
       <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
     {% endfor %}
+  {% endmacro %}
 
-    {% block content %}{% endblock %}
-  </main>
+  {% if usuario %}
+  <div class="layout">
+    <!-- Barra superior (celular) -->
+    <div class="topo-mobile">
+      <a class="marca" href="/"><i class="bi bi-house-heart-fill"></i> Lar Ideal</a>
+      <button type="button" onclick="document.getElementById('lateral').classList.toggle('aberta')" aria-label="Abrir menu">
+        <i class="bi bi-list"></i>
+      </button>
+    </div>
 
-  <footer class="text-center text-muted small py-3 border-top bg-white">
-    Imobiliária Lar Ideal · FastAPI + MySQL · Trabalho de Banco de Dados
-  </footer>
+    <!-- Menu lateral -->
+    <aside class="lateral" id="lateral">
+      <a class="marca" href="/"><i class="bi bi-house-heart-fill"></i> Lar Ideal</a>
+      <div class="slogan">Imobiliária · Palmas–TO</div>
+
+      {% set caminho = request.url.path %}
+      <nav class="nav flex-column">
+        {% for href, icone, texto in [('/', 'grid-1x2', 'Painel'), ('/clientes', 'people', 'Clientes'),
+                                      ('/imoveis', 'buildings', 'Imóveis'), ('/contratos', 'file-earmark-text', 'Contratos'),
+                                      ('/usuarios', 'person-gear', 'Usuários')] %}
+        {% set ativo = (caminho == '/') if href == '/' else caminho.startswith(href) %}
+        <a class="nav-link {{ 'active' if ativo }}" href="{{ href }}"><i class="bi bi-{{ icone }}"></i> {{ texto }}</a>
+        {% endfor %}
+      </nav>
+
+      <div class="usuario">
+        <div class="fw-semibold">{{ usuario.nome }}</div>
+        <a href="/logout"><i class="bi bi-box-arrow-right"></i> Sair do sistema</a>
+      </div>
+    </aside>
+
+    <div class="conteudo">
+      <main>
+        {{ alertas(mensagens) }}
+        {% block content %}{% endblock %}
+      </main>
+      <footer class="rodape">
+        Imobiliária Lar Ideal · Trabalho de Banco de Dados · FastAPI + MySQL
+      </footer>
+    </div>
+  </div>
+  {% else %}
+    {% block publico %}
+    <main class="container py-5">{{ alertas(mensagens) }}{% block content_publico %}{% endblock %}</main>
+    {% endblock %}
+  {% endif %}
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
