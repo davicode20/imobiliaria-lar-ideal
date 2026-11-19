@@ -1,11 +1,30 @@
 import os
+import ssl
 from contextlib import contextmanager
+from pathlib import Path
 
+import certifi
 import pymysql
 from dotenv import load_dotenv
 from pymysql.cursors import DictCursor
 
 load_dotenv()
+
+RAIZ_DO_PROJETO = Path(__file__).resolve().parent.parent
+
+
+def contexto_ssl():
+    """SSL é obrigatório em bancos na nuvem (Aiven, TiDB...). Localmente fica desligado.
+
+    DB_SSL=true             -> liga o SSL usando os certificados públicos (certifi)
+    DB_SSL_CA=certs/ca.pem  -> usa o certificado do provedor (caminho a partir da raiz do projeto)
+    """
+    ca = os.getenv("DB_SSL_CA")
+    if ca:
+        return ssl.create_default_context(cafile=str(RAIZ_DO_PROJETO / ca))
+    if os.getenv("DB_SSL", "").lower() in ("1", "true", "sim"):
+        return ssl.create_default_context(cafile=certifi.where())
+    return None
 
 
 def get_connection():
@@ -18,6 +37,8 @@ def get_connection():
         charset="utf8mb4",
         cursorclass=DictCursor,
         autocommit=False,
+        ssl=contexto_ssl(),
+        connect_timeout=10,
     )
 
 

@@ -45,6 +45,16 @@ O script completo (criação, carga de dados e consultas de demonstração) est�
    ```
 3. Acesse http://127.0.0.1:8000 e entre com **admin / admin123**.
 
+## Deploy no Vercel
+O Vercel detecta o FastAPI em `app/main.py` automaticamente. Como ele não hospeda MySQL, o banco fica num
+serviço de MySQL na nuvem (ex.: **Aiven**, plano gratuito), que exige conexão com SSL.
+1. Crie o MySQL na nuvem e rode `sql/script_imobiliaria.sql` nele (pelo Workbench, por exemplo).
+2. Se o provedor fornecer um certificado (`ca.pem`, no caso do Aiven), salve-o em `certs/ca.pem`.
+3. No Vercel: **Add New → Project → Import** deste repositório do GitHub.
+4. Em **Environment Variables**, cadastre `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`,
+   `DB_NAME`, `DB_SSL_CA=certs/ca.pem` (ou `DB_SSL=true`) e um `SECRET_KEY` aleatório.
+5. Clique em **Deploy**.
+
 ## Estrutura
 ```
 app/
